@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+
+  seznam-api:
+    build: .
+    restart: always
+    ports:
+      - "5050:5050"
+    environment:
+      - DB_URI=postgresql://postgres:postgres@db/
+      - ROOT_PATH=./files/
+      - SALT=kkz123
+      - ROOT_PWD=4c183e2729c2effc236233b08e10dd24
+    depends_on:
+      - db
