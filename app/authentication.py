@@ -9,7 +9,7 @@ from app.models import Token
 def authenticate_root(func):
     def authentication():
         token = flask.request.headers.get('Authorization')
-        if not token or len(token.split()) != 2 or 'bearer' not in token.lower():
+        if not token or len(token.split()) != 2 or token.split()[0].lower() != 'bearer':
             return {'message': 'Authorization header missing or token in incorrect format'}, 400
         else:
             token = token.split()[1]
@@ -24,7 +24,7 @@ def authenticate_root(func):
 def authenticate(func):
     def authentication():
         auth_token = flask.request.headers.get('Authorization')
-        if not auth_token or len(auth_token.split()) != 2 or 'bearer' not in auth_token.lower():
+        if not auth_token or len(auth_token.split()) != 2 or auth_token.split()[0].lower() != 'bearer':
             return {'message': 'Authorization header missing or token in incorrect format'}, 400
         else:
             auth_token = auth_token.split()[1].strip()

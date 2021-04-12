@@ -4,18 +4,24 @@ services:
   db:
     image: postgres
     restart: always
+    #volumes:
+    #  - ./file-system-data/db:/app/postgres
     environment:
       - POSTGRES_PASSWORD=postgres
+    #  - PGDATA=./app/postgres
 
-  seznam-api:
+  filesystem-api:
     build: .
     restart: always
     ports:
       - "5050:5050"
+    #volumes:
+    #  - ./file-system-data/files:/files/
     environment:
-      - DB_URI=postgresql://postgres:postgres@db/
+      - DB_URI=postgresql://postgres:postgres@db/postgres
       - ROOT_PATH=./files/
       - SALT=kkz123
       - ROOT_PWD=4c183e2729c2effc236233b08e10dd24
+      - DEBUG=False
     depends_on:
       - db

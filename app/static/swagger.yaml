@@ -1,0 +1,269 @@
+openapi: "3.0.0"
+info:
+  title: "Seznam API"
+  description: "This is documentation for Seznam API"
+  version: "0.1"
+  contact:
+    email: "m.laskowski@o2.pl"
+servers:
+  - url: "/"
+tags:
+  - name: "root/create_token"
+    description: "For creating access tokens and file system directories."
+  - name: "dir"
+    description: "For retrieving directory content"
+  - name: "details"
+    description: "For retrieving file details"
+  - name: "create"
+    description: "For creating a new empty file"
+  - name: "delete/file"
+    description: "For deleting files"
+  - name: "delete/dir"
+    description: "For deleting empty directories"
+  - name: "disk_usage"
+    description: "For disk usage information"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: "All endpoints are authorized by access tokens.
+      'Root' accepts the 'ROOT_PWD' token defined as an environmental variable.
+      Rest of the endpoints accept tokens generated via 'root/create_token' endpoint."
+security:
+  - bearerAuth: [ ]
+paths:
+  /root/create_token/:
+    post:
+      tags:
+        - "root/create_token"
+      summary: "Create new activity for user"
+      operationId: "root/create_token"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - "name"
+              properties:
+                name:
+                  type: "string"
+                  example: "asbdbds-231asd-1231-bcc0v9d"
+      responses:
+        "201":
+          description: "Data inserted correctly"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    example: "Created"
+                  name:
+                    type: "string"
+                    example: "asbdbds-231asd-1231-bcc0v9d"
+                  access_token:
+                    type: "string"
+                    example: "a062055f-0d2c-43b2-96e1-8ca3076f54c3"
+        "400":
+          description: "Request validation error"
+        "401":
+          description: "Token validation error"
+        "409":
+          description: "Token name not unique"
+  /dir/:
+    get:
+      tags:
+        - "dir"
+      summary: "Retrieve directory content"
+      operationId: "dir/"
+      parameters:
+        - name: "path"
+          in: query
+          description: "Search directory path"
+          schema:
+            type: "string"
+            example: "dir1/"
+      responses:
+        "200":
+          description: "Data retrieved properly"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  dir:
+                    type: "object"
+                    example: [ { 'name': 'dir2', 'is_file': False, 'size': '0B', 'created': '2007-03-04 01:46:43.100000' },
+                               { 'name': 'file.txt', 'is_file': True, 'size': '60B', 'created': '2007-03-04 01:46:43.100000' } ]
+                  path:
+                    type: "string"
+                    example: "dir1/"
+        "400":
+          description: "Request validation error"
+        "401":
+          description: "Token validation error"
+        "404":
+          description: "Directory not found"
+  /details/:
+    get:
+      tags:
+        - "details"
+      summary: "Retrieve file details"
+      operationId: "details/"
+      parameters:
+        - name: "path"
+          in: query
+          description: "Search directory path"
+          schema:
+            type: "string"
+            example: "dir1/"
+        - name: "filename"
+          in: query
+          description: "Searched file name"
+          required: true
+          schema:
+            type: "string"
+            example: "file.txt"
+      responses:
+        "200":
+          description: "Data retrieved properly"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  dir:
+                    type: "object"
+                    example: { 'name': 'file.txt', 'size': '60B', 'created': '2007-03-04 01:46:43.100000' }
+                  path:
+                    type: "string"
+                    example: "dir1/dir/2"
+        "400":
+          description: "Request validation error"
+        "401":
+          description: "Token validation error"
+        "404":
+          description: "File not found"
+  /create/:
+    put:
+      tags:
+        - "create"
+      summary: "Create a new empty file"
+      operationId: "create/"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - "path"
+                - "filename"
+              properties:
+                path:
+                  type: "string"
+                  example: "dir1/dir2"
+                filename:
+                  type: "string"
+                  example: "file.txt"
+      responses:
+        "201":
+          description: "Data inserted properly"
+        "400":
+          description: "Request validation error"
+        "401":
+          description: "Token validation error"
+  /delete/file/:
+    delete:
+      tags:
+        - "delete/file"
+      summary: "Delete file"
+      operationId: "delete/file/"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - "path"
+                - "filename"
+              properties:
+                path:
+                  type: "string"
+                  example: "dir1/dir2"
+                filename:
+                  type: "string"
+                  example: "file.txt"
+      responses:
+        "200":
+          description: "Data deleted properly"
+        "400":
+          description: "Request validation error"
+        "401":
+          description: "Token validation error"
+        "404":
+          description: "File not found"
+  /delete/dir/:
+    delete:
+      tags:
+        - "delete/dir"
+      summary: "Delete empty directory"
+      operationId: "delete/dir/"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - "path"
+                - "dirname"
+              properties:
+                path:
+                  type: "string"
+                  example: "dir1"
+                dirname:
+                  type: "string"
+                  example: "dir2"
+      responses:
+        "200":
+          description: "Data deleted properly"
+        "400":
+          description: "Request validation error or directory not empty"
+        "401":
+          description: "Token validation error"
+        "404":
+          description: "Directory not found"
+  /disk_usage/:
+    get:
+      tags:
+        - "disk_usage"
+      summary: "Retrieve disk usage information"
+      operationId: "disk_usage/"
+      responses:
+        "200":
+          description: "Data retrieved properly"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  free:
+                    type: "string"
+                    example: "217G"
+                  used:
+                    type: "string"
+                    example: "110G"
+                  total:
+                    type: "string"
+                    example: "312G"
+        "400":
+          description: "Request validation error"
+        "401":
+          description: "Token validation error"

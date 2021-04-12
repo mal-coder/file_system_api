@@ -3,7 +3,7 @@ import flask
 from app.config import ROOT_PATH
 
 
-def validate_body(func):
+def validate_json_body(func):
     def validation():
         if not flask.request.get_json():
             return {'message': 'Body not in JSON format'}, 400
@@ -22,4 +22,5 @@ def normalize_path_name(path):
     if path:
         if path[-1] != '/':
             return f'{path}/'
-    return path
+        return path
+    return ''

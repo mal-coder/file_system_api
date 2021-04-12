@@ -6,3 +6,4 @@ if 'app' in ROOT_PATH.lower():
 DB_URI = os.environ['DB_URI']
 SALT = os.environ['SALT']
 ROOT_PWD = os.environ['ROOT_PWD']
+DEBUG = os.environ['DEBUG']

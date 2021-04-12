@@ -5,16 +5,15 @@ from flask import Blueprint, request
 from hurry.filesize import size
 
 from app.authentication import authenticate
-from app.helpers import prepare_path, validate_body
+from app.helpers import prepare_path
 
 bp = Blueprint('dir', __name__)
 
 
 @bp.route('/dir/', methods=['GET'])
-@validate_body
 @authenticate
 def get_dir(token_dir):
-    path, request_path = prepare_path(token_dir, request.json.get('path', ''))
+    path, request_path = prepare_path(token_dir, request.args.get('path', ''))
     try:
         dir_list = [
             {'name': entry.name,

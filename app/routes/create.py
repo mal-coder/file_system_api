@@ -3,13 +3,13 @@ import os
 from flask import Blueprint, request
 
 from app.authentication import authenticate
-from app.helpers import prepare_path, validate_body
+from app.helpers import prepare_path, validate_json_body
 
 bp = Blueprint('create', __name__)
 
 
 @bp.route('/create/', methods=['PUT'])
-@validate_body
+@validate_json_body
 @authenticate
 def create(token_dir):
     path, request_path = prepare_path(token_dir, request.json.get('path', ''))

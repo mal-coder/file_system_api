@@ -3,14 +3,14 @@ import os
 from flask import Blueprint, request
 
 from app.authentication import authenticate
-from app.helpers import prepare_path, validate_body
+from app.helpers import prepare_path, validate_json_body
 
 bp_file = Blueprint('delete_file', __name__)
 bp_dir = Blueprint('delete_dir', __name__)
 
 
 @bp_file.route('/delete/file/', methods=['DELETE'])
-@validate_body
+@validate_json_body
 @authenticate
 def delete_file(token_dir):
     path, request_path = prepare_path(token_dir, request.json.get('path', ''))
@@ -26,7 +26,7 @@ def delete_file(token_dir):
 
 
 @bp_dir.route('/delete/dir/', methods=['DELETE'])
-@validate_body
+@validate_json_body
 @authenticate
 def delete_dir(token_dir):
     path, request_path = prepare_path(token_dir, request.json.get('path', ''))
@@ -38,7 +38,7 @@ def delete_dir(token_dir):
         try:
             os.rmdir(path)
         except OSError as e:
-            if e.errno == 66:
+            if e.errno in (39, 66):
                 return {'message': 'Directory not empty'}, 400
             else:
                 raise

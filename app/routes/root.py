@@ -7,15 +7,15 @@ from flask import Blueprint, request
 from app.authentication import authenticate_root
 from app.config import SALT, ROOT_PATH
 from app.db import db
-from app.helpers import validate_body
+from app.helpers import validate_json_body
 from app.models import Token
 
 bp = Blueprint('create_token', __name__)
 
 
-@bp.route('/root/create_token', methods=['POST'])
+@bp.route('/root/create_token/', methods=['POST'])
 @authenticate_root
-@validate_body
+@validate_json_body
 def create_token():
     request_name = request.json.get('name')
     if not request_name:
