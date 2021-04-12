@@ -87,7 +87,7 @@ paths:
           description: "Search directory path"
           schema:
             type: "string"
-            example: "dir1/"
+            example: "dir1"
       responses:
         "200":
           description: "Data retrieved properly"
@@ -142,7 +142,7 @@ paths:
                     example: { 'name': 'file.txt', 'size': '60B', 'created': '2007-03-04 01:46:43.100000' }
                   path:
                     type: "string"
-                    example: "dir1/dir/2"
+                    example: "dir1/dir2/"
         "400":
           description: "Request validation error"
         "401":

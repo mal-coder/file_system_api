@@ -4,7 +4,6 @@ import pytest
 from flask import json
 
 from app.config import ROOT_PWD
-from app.helpers import normalize_path_name
 from run import app
 
 access_token = None

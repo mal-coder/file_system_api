@@ -8,7 +8,6 @@ def validate_json_body(func):
         if not flask.request.get_json():
             return {'message': 'Body not in JSON format'}, 400
         return func()
-
     return validation
 
 
